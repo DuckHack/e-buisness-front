@@ -16,13 +16,13 @@ class Login extends Component{
     }
 
     handleSubmit(){
-//        const userId = this.state.value.toString();
+       const userId = this.state.value.toString();
         alert('A name was submitted: ' + this.state.value);
-//        if(userId === '1'){
-//            this.state.redirect = true;
-//        }else{
-//            alert('Wrong user');
-//        }
+       if(userId === '1'){
+           this.state.redirect = true;
+       }else{
+           alert('Wrong user');
+        }
     }
 
 
@@ -36,9 +36,9 @@ class Login extends Component{
 
     render(){
         const { redirect } = this.state;
-        // if (redirect) {
-        //  return <Redirect to='/somewhere'/>;
-        // }
+        if (redirect) {
+         return <Redirect to='/somewhere'/>;
+        }
         return(
 
             <div>

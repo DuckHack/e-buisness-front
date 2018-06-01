@@ -11,6 +11,7 @@ class NavBar extends Component{
             <ul>
                 <li><Link to='/'>Home</Link></li>
                 <li><Link to='/products'>Products</Link></li>
+                <li><Link to='/basket'>Basket</Link></li>
                 <li><Link to='/login'>Sign in or Sign up</Link></li>
             </ul>
         );
