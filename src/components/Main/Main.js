@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import Home from '../Home/Home'
 import Products from '../Products/Products'
 import Login from '../Login/Login'
-import Basket from '../Basket/Basket'
+import UserPage from '../UserPage/UserPage'
 import AdminPage from '../AdminPage/AdminPage'
 
 // The Main component renders one of the three provided
@@ -17,10 +17,11 @@ const Main = () => (
             <Route exact path='/' component={Home}/>
             <Route path='/products' component={Products}/>
             <Route path='/login' component={Login}/>
-            <Route path='/basket' component={Basket}/>
+            <Route path='/userpage' component={UserPage}/>
             <Route path='/adminpage' component={AdminPage}/>
         </Switch>
     </main>
 );
+
 
 export default Main

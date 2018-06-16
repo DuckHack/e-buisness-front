@@ -1,10 +1,6 @@
 import React, {Component} from 'react';
 
 class Home extends Component{
-    constructor(){
-        super()
-    }
-
     render(){
         return(
             <h1>
@@ -13,5 +9,6 @@ class Home extends Component{
         );
     }
 }
+
 
 export default Home;

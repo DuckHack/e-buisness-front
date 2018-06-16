@@ -8,11 +8,14 @@ class AddProductForm extends Component{
                 description: '',
                 type_id: '',
                 price: '',
-                productTypes: []
+                productTypes: [],
+                productList: [],
         };
-        this.handleSubmitAction = this.handleSubmitAction.bind(this);
+        this.handleSubmitAdd = this.handleSubmitAdd.bind(this);
+        this.handleSubmitDel = this.handleSubmitDel.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
+
 
     componentWillMount() {
         fetch('http://localhost:9090/types/gettypes', {
@@ -25,10 +28,21 @@ class AddProductForm extends Component{
             .then((data) => {
                 this.setState({productTypes: data});
             });
+
+        fetch('http://localhost:9090/products/getproducts', {
+            headers: {'Access-Control-Allow-Origin': '*'},
+            method: 'GET',
+            mode: 'cors'
+
+
+        }).then(function(response) {return response.json();})
+            .then((data) => {
+                this.setState({productList: data});
+            });
     }
 
 
-    handleSubmitAction(e){
+    handleSubmitAdd(e){
         e.preventDefault();
         const data = new FormData(e.target);
 
@@ -41,6 +55,20 @@ class AddProductForm extends Component{
 
     }
 
+
+    handleSubmitDel(e){
+	console.log("trying to delete");
+        e.preventDefault();
+        const data = new FormData(e.target);
+
+        fetch("http://localhost:9090/products/delproduct", {
+            headers: {'Access-Control-Allow-Origin': '*'},
+            method: 'DELETE',
+            body: data,
+        });
+    }
+
+
     handleChange(e) {
         this.setState({[e.target.name]: e.target.value});
     }
@@ -49,14 +77,20 @@ class AddProductForm extends Component{
     render(){
         let types = [];
         for (let i=0; i < this.state.productTypes.length; i++){
-            let type = this.state.productTypes[i].id;
             types.push(<option value={this.state.productTypes[i].id} key={i}>{this.state.productTypes[i].name}</option>);
         }
 
+        let products = [];
+        for (let i=0; i < this.state.productList.length; i++){
+            products.push(<option value={this.state.productList[i].id} key={i}>{this.state.productList[i].name}</option>);
+        }
         return(
             <div>
-                <h1>Add product</h1>
-                <form onSubmit={this.handleSubmitAction}>
+                <h1>Edit products</h1>
+                <div>
+                    <label>Add product</label>
+                </div>
+                <form onSubmit={this.handleSubmitAdd}>
                     <label >
                         Name
                         <input type='text' name='name' value={this.state.name} onChange={this.handleChange}/>
@@ -72,18 +106,23 @@ class AddProductForm extends Component{
                     <select name='type_id'>
                         {types}
                     </select>
-
                         <input type='submit' value='Submit'/>
+                </form>
+                <form onSubmit={this.handleSubmitDel}>
+                    <div>
+                        <label>Del Product</label>
+                    </div>
+                    <label>Chose the product and press submit
+                        <select name='id'>
+                            {products}
+                        </select>
+                    </label>
+                    <input type="submit" value="Submit"/>
                 </form>
             </div>
         );
     }
 }
 
-// <select name="type_id" id="type_id">
-//     @for(p_type <- prod_type){
-//     <option value="@p_type.id">@p_type.name</option>
-// }
-// </select>
 
 export default AddProductForm;

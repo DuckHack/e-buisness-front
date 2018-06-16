@@ -12,4 +12,5 @@ const Products = () => (
     </Switch>
 );
 
+
 export default Products

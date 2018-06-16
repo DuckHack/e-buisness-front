@@ -4,31 +4,16 @@ import React, {Component} from 'react';
 class OpinionElement extends Component{
     constructor(props){
         super(props);
-        //this.handleSelectChange = this.handleSelectChange.bind(this);
+        this.handleOpinionChange = this.handleOpinionChange.bind(this);
         this.handleOpinionSubmit = this.handleOpinionSubmit.bind(this);
         this.state = {
-            opinionsList: [
-                {
-                    id: 1,
-                    value: 'Tak sebe avto',
-                    product_id: 1
-                },
-                {
-                    id: 2,
-                    value: 'Tak sebe avto2',
-                    product_id: 1
-                }
-            ],
+            opinionsList: [],
             value: '',
-            product_id: ''
+            product_id: '',
+	    submitStatus:'',
         };
     }
-//     create table "opinion" (
-    //         "id" integer primary key autoincrement,
-    //         "value" varchar,
-    //         "product_id" integer not null,
-    //         foreign key("product_id") references product(id)
-    // );
+
 
     componentWillMount() {
         fetch('http://localhost:9090/opinions/getopinions', {
@@ -42,29 +27,44 @@ class OpinionElement extends Component{
                 this.setState({opinionsList: data});
             });
     }
-    handleSelectChange(e){
 
+
+    handleOpinionChange(e){
+	    this.setState({value: e.target.value});
     }
+
 
     handleOpinionSubmit(e){
-        console.log('OpinionSubmit')
+        e.preventDefault();
+        const data = new FormData(e.target);
+	fetch("http://localhost:9090/opinions/addopinion",{
+		headers: {'Access-Control-Allow-Origin': '*'},
+		method: 'POST',
+		body: data,
+    	});
+	    this.setState({submitStatus: 'Submitted',
+			value: ''
+	    });
     }
+
 
     render(){
         let opinions = [];
-	    opinions.push(<li>Opinions</li>)
+	    opinions.push(<li key={0}>Opinions</li>);
         this.state.opinionsList.forEach((el)=>{
             if(+el.product_id === +this.props.product_id){
-                opinions.push(<li>{el.value}</li>);
+                opinions.push(<li key={el.value}>{el.value}</li>);
             }
         });
 	    opinions.push(
 	    	<div>
-		    <form onSubmit={this.handleOpinionSubmit}>
-		    <input type='text' value=''/>
-		    <input type='submit' value='Submit'/>
-		    </form>
-		</div>
+                <form onSubmit={this.handleOpinionSubmit}>
+                    <input type='text' name='value' value={this.state.value} onChange={this.handleOpinionChange}/>
+		    <input type='hidden' name='product_id' value={this.props.product_id}/>
+                    <input type='submit' value='Submit'/>
+		    <p>{this.state.submitStatus}</p>
+                </form>
+		    </div>
 	    );
         return(
             <div>
@@ -75,5 +75,6 @@ class OpinionElement extends Component{
         );
     }
 }
+
 
 export default OpinionElement;

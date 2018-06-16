@@ -4,10 +4,6 @@ import AdminForms from '../Forms/AdminForms/AdminForms';
 
 
 class AdminPage extends Component{
-    constructor(props){
-        super(props)
-    }
-
     render(){
         return(
             <div>
@@ -15,14 +11,17 @@ class AdminPage extends Component{
                     Admin Page
                 </h1>
                 <ul>
-                    <Link to='/adminpage/AddProduct'><li>Add product</li></Link>
-                    <Link to='/adminpage/AddProductType'><li>Add product Type</li></Link>
-                    <Link to='/adminpage/AddKeyWord'><li>Add keyword</li></Link>
-                    <Link to='/adminpage/AddBasket'><li> Add Basket</li></Link>
+                    <Link to='/adminpage/editProduct'><li>Edit product</li></Link>
+                    <Link to='/adminpage/editProductType'><li>Edit product Type</li></Link>
+                    <Link to='/adminpage/editKeyWord'><li>Edit keyword</li></Link>
+                    <Link to='/adminpage/editBasket'><li>Edit Basket</li></Link>
+                    <Link to='/adminpage/editOpinion'><li>Edit Opinion</li></Link>
                 </ul>
                 <AdminForms/>
             </div>
         );
     }
 }
+
+
 export default AdminPage;

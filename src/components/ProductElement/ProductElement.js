@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import OpinionElement from '../OpinionElement/OpinionElement'
+import AddToBasket from '../AddToBasket/AddToBasket'
 
 class ProductElement extends Component{
     constructor(props){
@@ -38,6 +39,7 @@ class ProductElement extends Component{
             });
     }
 
+
     handleSelectChange(e){
         let type = +e.target.value;
         let data = [];
@@ -68,10 +70,11 @@ class ProductElement extends Component{
             curProductList = this.state.productsList.slice(0,);
         }
         for (let i = 0; i < curProductList.length; i++) {
-            let id = curProductList[i].type_id;
+            //let id = curProductList[i].type_id;
 
             products.push(
                 <li key={i} >
+                    <AddToBasket/>
                     <div>
                         {curProductList[i].name}
                     </div>
@@ -89,8 +92,6 @@ class ProductElement extends Component{
                 </li>
             );
         }
-
-
         types.push(<option value={0}>All types</option>);
         for (let i=0; i < this.state.productTypes.length; i++){
             //let type = this.state.productTypes[i].id;
@@ -104,9 +105,11 @@ class ProductElement extends Component{
                 <select onChange={this.handleSelectChange}>
                     {types}
                 </select>
+                <AddToBasket/>
             </div>
         );
     }
 }
+
 
 export default ProductElement;

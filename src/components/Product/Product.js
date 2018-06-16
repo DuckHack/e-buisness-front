@@ -24,6 +24,7 @@ class Product extends Component{
             });
     }
 
+
     render(){
         return(
             <h1>
@@ -32,5 +33,6 @@ class Product extends Component{
         );
     }
 }
+
 
 export default Product;

@@ -1,58 +1,114 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import { Redirect } from 'react-router'
 
 
 class Login extends Component{
     constructor(props){
         super(props);
         this.state = {
-            value: '',
-            redirect: false
+            logIn: '',
+            signIn: '',
+		basket: [],
+            loadingMessage: "",
+            isFetchFail: 2,
         };
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        //var inputAlert;
+        this.handleSubmitLogIn = this.handleSubmitLogIn.bind(this);
+        this.handleSubmitSignIn = this.handleSubmitSignIn.bind(this);
+        this.handleChangeLog = this.handleChangeLog.bind(this);
+        this.handleChangeSig = this.handleChangeSig.bind(this);
+        this.getBasketId = this.getBasketId.bind(this);
     }
 
-    handleSubmit(){
-       const userId = this.state.value.toString();
-        alert('A name was submitted: ' + this.state.value);
-       if(userId === '1'){
-           this.state.redirect = true;
+    //TODO make user validation
+    handleSubmitLogIn(){
+       const userID = this.state.logIn.toString();
+	sessionStorage.setItem('userID', userID);
+       let basket;
+        if(userID) {
+            console.log(userID + " RESPONSE");
+
+            fetch(`http://localhost:9090/baskets/get/${userID}`, {
+               headers: {'Access-Control-Allow-Origin': '*'},
+               method: 'GET',
+               mode: 'cors'
+           }).then(function (response) {
+               console.log(response.json() + " RESPONSE");
+               return response.json();
+           }).then((data) => {
+                   basket = data;
+                   sessionStorage.setItem('basketID', basket);
+               });
        }else{
-           alert('Wrong user');
-        }
+           alert("Wrong input")
+       }
+    }
+
+    //TODO create new basket for new user
+    handleSubmitSignIn(){
+
     }
 
 
-    handleChange(event) {
-        const inputState = event.target.value;
-        this.setState({value: event.target.value});
-        (inputState !== '1')? this.inputAlert = 'Wrong input': this.inputAlert='';
-        if(inputState === '') this.inputAlert = '';
+    getBasketId(userID){
+	fetch(`http://localhost:9090/baskets/get/${userID}`, {
+            headers: {'Access-Control-Allow-Origin': '*'},
+            method: 'GET',
+            mode: 'cors'
+
+
+        }).then(function(response) {return response.json();})
+            .then((data) => {
+                console.log(data + " DATA");
+                this.setState({basket: data});
+                sessionStorage.setItem('basketID', data);
+            }); 
+    }
+
+
+    handleChangeLog(event) {
+        this.setState({logIn: event.target.value});
+    }
+
+    //TODO check if this id already in DB
+    handleChangeSig(event) {
+        this.setState({signIn: event.target.value});
     }
 
 
     render(){
-        const { redirect } = this.state;
-        if (redirect) {
-         return <Redirect to='/somewhere'/>;
+        let loadingMessage = "";
+        let locState;
+        if(this.state.isFetchFail === 1){
+            loadingMessage = "Can't connect with server, try later";
+        }else if(this.state.isFetchFail === 0){
+            loadingMessage = "You logged";
         }
-        return(
+	    locState = (this.state.basket[0] === undefined)?"Loading":this.state.basket[0].id;
 
+
+        return(
             <div>
-                <h1>
-                    Login page
-                </h1>
-                <form onSubmit={this.handleSubmit}>
+                <h1>Login in</h1>
+                <form onSubmit={this.handleSubmitLogIn}>
                 <label>Enter your id
-                    <input type='text' value={this.state.value} onChange={this.handleChange}/>
+                    <input type='text' value={this.state.logIn} onChange={this.handleChangeLog}/>
                 </label>
                     <input type="submit" value="Submit"/>
-                    <p>{this.inputAlert}</p>
                 </form>
-                <Link to={`/adminpage`}>Admin page</Link>
+                <h1>Sign in</h1>
+                <form onSubmit={this.handleSubmitSignIn}>
+                    <label>Enter your id
+                        <input type='text' value={this.state.signIn} onChange={this.handleChangeSig}/>
+                    </label>
+                    <input type="submit" value="Submit"/>
+                </form>
+                <br/>
+                <p>{loadingMessage}</p>
+		        <p>user + {sessionStorage.getItem("userID")}</p>
+                <p>{locState}</p>
+                <p>Login id {this.state.logIn}</p>
+                <p>session  + {sessionStorage.getItem('basketID')}</p>
+		<Link to={`/adminpage`}>Admin page</Link>
             </div>
         );
     }
