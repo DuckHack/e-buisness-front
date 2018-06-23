@@ -1,15 +1,40 @@
 import React, {Component} from 'react';
-import { Link } from 'react-router-dom'
+import './NavBar.css'
+import {Navbar, Nav, NavItem, PageHeader} from 'react-bootstrap'
+import Logo from './1200px-Ray-Ban_logo.svg.png'
 
 class NavBar extends Component{
     render(){
         return(
-            <ul>
-                <li><Link to='/'>Home</Link></li>
-                <li><Link to='/products'>Products</Link></li>
-                <li><Link to='/userpage'>User page</Link></li>
-                <li><Link to='/login'>Sign in or Sign up</Link></li>
-            </ul>
+            <div>
+                <PageHeader bsClass={'header'}>
+                        NEVER HIDE <small>RayBan</small>
+                </PageHeader>
+                <Navbar>
+                    <Navbar.Header>
+                        <Navbar.Brand>
+                            <div className={'navLogo'}>
+                                <a href={'/'}>
+                                    <img src={Logo} />
+                                </a>
+                            </div>
+                        </Navbar.Brand>
+                    </Navbar.Header>
+                    <Nav>
+                        <NavItem eventKey={1} href='/products'>
+                            Products
+                        </NavItem>
+                        <NavItem eventKey={2} href='/userpage'>
+                            User page
+                        </NavItem>
+                    </Nav>
+                    <Nav pullRight>
+                        <NavItem eventKey={1} href='/authenticate'>
+                            Auth
+                        </NavItem>
+                    </Nav>
+                </Navbar>
+            </div>
         );
     }
 }

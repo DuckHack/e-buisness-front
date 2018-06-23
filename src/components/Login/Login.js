@@ -1,5 +1,15 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
+import { ButtonToolbar, Button} from 'react-bootstrap';
+import {
+    Route,
+    withRouter,
+    Redirect,
+    BrowserRouter as Router,
+} from "react-router-dom";
+
+
+import OALogin  from '../../Auth'
 
 
 class Login extends Component{
@@ -12,107 +22,114 @@ class Login extends Component{
             loadingMessage: "",
             isFetchFail: 2,
         };
-        this.handleSubmitLogIn = this.handleSubmitLogIn.bind(this);
-        this.handleSubmitSignIn = this.handleSubmitSignIn.bind(this);
-        this.handleChangeLog = this.handleChangeLog.bind(this);
-        this.handleChangeSig = this.handleChangeSig.bind(this);
-        this.getBasketId = this.getBasketId.bind(this);
     }
-
-    //TODO make user validation
-    handleSubmitLogIn(){
-       const userID = this.state.logIn.toString();
-	sessionStorage.setItem('userID', userID);
-       let basket;
-        if(userID) {
-            console.log(userID + " RESPONSE");
-
-            fetch(`http://localhost:9090/baskets/get/${userID}`, {
-               headers: {'Access-Control-Allow-Origin': '*'},
-               method: 'GET',
-               mode: 'cors'
-           }).then(function (response) {
-               console.log(response.json() + " RESPONSE");
-               return response.json();
-           }).then((data) => {
-                   basket = data;
-                   sessionStorage.setItem('basketID', basket);
-               });
-       }else{
-           alert("Wrong input")
-       }
-    }
-
-    //TODO create new basket for new user
-    handleSubmitSignIn(){
-
-    }
-
-
-    getBasketId(userID){
-	fetch(`http://localhost:9090/baskets/get/${userID}`, {
-            headers: {'Access-Control-Allow-Origin': '*'},
-            method: 'GET',
-            mode: 'cors'
-
-
-        }).then(function(response) {return response.json();})
-            .then((data) => {
-                console.log(data + " DATA");
-                this.setState({basket: data});
-                sessionStorage.setItem('basketID', data);
-            }); 
-    }
-
-
-    handleChangeLog(event) {
-        this.setState({logIn: event.target.value});
-    }
-
-    //TODO check if this id already in DB
-    handleChangeSig(event) {
-        this.setState({signIn: event.target.value});
-    }
-
 
     render(){
-        let loadingMessage = "";
-        let locState;
-        if(this.state.isFetchFail === 1){
-            loadingMessage = "Can't connect with server, try later";
-        }else if(this.state.isFetchFail === 0){
-            loadingMessage = "You logged";
-        }
-	    locState = (this.state.basket[0] === undefined)?"Loading":this.state.basket[0].id;
-
-
         return(
-            <div>
-                <h1>Login in</h1>
-                <form onSubmit={this.handleSubmitLogIn}>
-                <label>Enter your id
-                    <input type='text' value={this.state.logIn} onChange={this.handleChangeLog}/>
-                </label>
-                    <input type="submit" value="Submit"/>
-                </form>
-                <h1>Sign in</h1>
-                <form onSubmit={this.handleSubmitSignIn}>
-                    <label>Enter your id
-                        <input type='text' value={this.state.signIn} onChange={this.handleChangeSig}/>
-                    </label>
-                    <input type="submit" value="Submit"/>
-                </form>
-                <br/>
-                <p>{loadingMessage}</p>
-		        <p>user + {sessionStorage.getItem("userID")}</p>
-                <p>{locState}</p>
-                <p>Login id {this.state.logIn}</p>
-                <p>session  + {sessionStorage.getItem('basketID')}</p>
-		<Link to={`/adminpage`}>Admin page</Link>
-            </div>
+            <Router>
+                <div>
+                    <Link to={`/adminpage`}>Admin page</Link>
+                    <br/>
+                    <Link to="/auth/google">Auth</Link>
+                    <Route path="/auth/:id" component={OALogin}/>
+                </div>
+            </Router>
         );
     }
 }
+
+
+export const OAuth = {
+    isAuthenticated: false,
+    authenticatedData: [],
+
+    async authenticate(cb, provider_url) {
+        console.log(provider_url + " <- Provider URL");
+        try {
+            var url = 'http://localhost:9090' + provider_url;
+
+            const response = await fetch(url, {
+                headers: {'Access-Control-Allow-Origin': '*'},
+                method: 'GET',
+                mode: 'cors'
+            });
+
+            var json_response = await response.json();
+            this.authenticatedData = await json_response;
+
+            if (response.status.valueOf() === 200) {
+                this.isAuthenticated = await true;
+                console.log(this.authenticatedData);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        console.log(this.authenticatedData);
+    },
+    signout(cb) {
+        this.isAuthenticated = false;
+        this.authenticatedData = [];
+    }
+};
+
+
+
+const AuthButton = withRouter(
+    ({ history }) =>
+        OAuth.isAuthenticated ? (
+            <ButtonToolbar>
+                <p>
+                    {OAuth.authenticatedData.user_email}  {" "}
+                    <Button bsStyle="danger"
+                            onClick={() => {
+                                OAuth.signout(() => history.push("/"));
+                            }}
+                    >
+                        Sign out
+                    </Button>
+                </p>
+            </ButtonToolbar>
+        ) : (
+            <p>You are not logged in.</p>
+        )
+);
+
+export const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route
+        {...rest}
+        render={props =>
+            OAuth.isAuthenticated ? (
+                <Component {...props} />
+            ) : (
+                <Redirect
+                    to={{
+                        pathname: "/authenticate",
+                        state: { from: props.location }
+                    }}
+                />
+            )
+        }
+    />
+);
+
+
+
+export const BasketData = {
+    basket_data: [],
+    async get_basket(user_id)  {
+            var url = await "http://localhost:9090/basket/add/" + user_id;
+            const response = await fetch(url, {
+                headers: {'Access-Control-Allow-Origin': '*'},
+                method: 'GET',
+                mode: 'cors'
+            });
+            var json_response = await response.json();
+            BasketData.basket_data = await json_response;
+        //}
+    }
+
+};
+
 
 
 export default Login;

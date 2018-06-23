@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {BasketData} from "../../Login/Login";
+
 
 class Orders extends Component{
     constructor(){
@@ -7,22 +9,24 @@ class Orders extends Component{
             compState: "Loading",
             fetchedOrders: [],
         };
+        this.request_data();
     }
 
-//TODO change fetching var from userID to basket_id
-    componentWillMount(){
-        let userID = sessionStorage.getItem("userID");
-       // let basketID = sessionStorage.getItem("basketID");
-        fetch(`http://localhost:9090/orders/getorders/${userID}`,{
-            headers: {'Access-Controll-Allow-Origin': '*'},
+
+    request_data = async function () {
+        var url = await "http://localhost:9090/orders/getorders/" + BasketData.basket_data.id;
+
+        const response = await fetch(url, {
+            headers: {'Access-Control-Allow-Origin': '*'},
             method: 'GET',
             mode: 'cors'
-        }).then(function(response) {return response.json();})
-            .then((data) => {
-		    console.log(data);
-                this.setState({fetchedOrders: data});
-            });
-    }
+        });
+
+        var json_response = await response.json();
+        console.log(json_response);
+        await this.setState({fetchedOrders: json_response});
+
+    };
 
 
     render(){

@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom'
 import UserPageRouter from "../UserPageRouter/UserPageRouter";
+import {BasketData} from "../Login/Login";
+import {OAuth} from '../Login/Login'
 
 class UserPage extends Component{
     constructor(props){
@@ -11,34 +13,28 @@ class UserPage extends Component{
     }
 
 
-    componentWillMount(){
-        let userID = sessionStorage.getItem("userID");
-        if(userID !== null){
-         	this.setState({isLogged: true});
-         }
+    componentDidMount() {
+        if (BasketData.basket_data.length === 0) {
+            BasketData.get_basket(OAuth.authenticatedData.uuid)
+        }
     }
 
 
     render(){
-        if (!this.state.isLogged){
-            return(
-                <h1>Sorry, you must be logged</h1>
+        return (
+            <div>
+                <h1>
+                    User Page
+                </h1>
+                <ul>
+                    <li><Link to='/userpage/basket'>Basket</Link></li>
+                    <li><Link to='/userpage/orders'>Orders</Link></li>
+                    <li><Link to='/userpage/pays'>Pays</Link></li>
+                </ul>
+                <UserPageRouter/>
+            </div>
             );
-        }else {
-            return (
-                <div>
-                    <h1>
-                        User Page
-                    </h1>
-                    <ul>
-                        <li><Link to='/userpage/basket'>Basket</Link></li>
-                        <li><Link to='/userpage/orders'>Orders</Link></li>
-                        <li><Link to='/userpage/pays'>Pays</Link></li>
-                    </ul>
-                    <UserPageRouter/>
-                </div>
-            );
-        }
+
     }
 }
 

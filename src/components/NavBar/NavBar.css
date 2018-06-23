@@ -1,0 +1,29 @@
+.header{
+    background-color: black;
+}
+
+.header h1{
+    margin: 0px;
+    padding: 20px 0px 10px 0px;
+}
+
+.navbar{
+    background-color: black;
+    margin-bottom: 0px;
+}
+
+.container li{
+    font-size: 18px;
+}
+
+
+.navbar-brand{
+    font-size: 25px;
+    padding: 0;
+}
+
+.navLogo img{
+    width: 90px;
+    height: auto;
+    background-color: white;
+}

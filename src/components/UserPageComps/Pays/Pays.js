@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {BasketData, OAuth} from "../../Login/Login";
 
 class Pays extends Component{
     constructor(){
@@ -7,21 +8,30 @@ class Pays extends Component{
             compState: "Loading",
             fetchedPays: [],
         };
+        this.request_data();
     }
 
 
-    componentWillMount(){
-	let userID = sessionStorage.getItem('userID');
-        //let basketID = sessionStorage.getItem("basketID");
-        fetch(`http://localhost:9090/pays/get/${userID}`,{
-            headers: {'Access-Controll-Allow-Origin': '*'},
+    request_data = async function () {
+        let orderID = sessionStorage.getItem('orderID');
+        if(orderID === null){
+            this.setState({compState: "You haven't pays yet"});
+            return;
+        }
+        var url = await "http://localhost:9090/pays/get/" + BasketData.basket_data.id;
+
+        const response = await fetch(url, {
+            headers: {'Access-Control-Allow-Origin': '*'},
             method: 'GET',
             mode: 'cors'
-        }).then(function(response) {return response.json();})
-            .then((data) => {
-                this.setState({fetchedPays: data});
-            });
-    }
+        });
+
+        var json_response = await response.json();
+        console.log(json_response);
+        await this.setState({fetchedPays: json_response});
+
+    };
+
 
 
     render(){

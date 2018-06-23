@@ -16,6 +16,8 @@ class AdminPage extends Component{
                     <Link to='/adminpage/editKeyWord'><li>Edit keyword</li></Link>
                     <Link to='/adminpage/editBasket'><li>Edit Basket</li></Link>
                     <Link to='/adminpage/editOpinion'><li>Edit Opinion</li></Link>
+                    <Link to='/adminpage/editOrder'><li>Edit Order</li></Link>
+                    <Link to='/adminpage/editPay'><li>Edit Pay</li></Link>
                 </ul>
                 <AdminForms/>
             </div>
