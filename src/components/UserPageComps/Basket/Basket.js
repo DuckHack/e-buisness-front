@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import {BasketData, OAuth} from "../../Login/Login";
-
-
+import {Button, Grid, Row, Col} from 'react-bootstrap';
+import './Basket.css';
 class Basket extends Component{
     constructor(){
         super();
         this.state ={
-            compState: "Loading",
+            compState: "Czekaj",
+            pageTitle: "Twoj koszyk",
+            delButtTitle: "Usun z koszyka",
             fetchedBasketProducts: [],
         };
         this.delProduct = this.delProduct.bind(this);
@@ -17,7 +18,7 @@ class Basket extends Component{
 
 
     request_data = async function () {
-        var url = await "http://localhost:9090/basketproducts/getbyid/" + BasketData.basket_data.id;
+        var url = await "http://localhost:9090/basketproducts/getbyid/" + sessionStorage.getItem('basketID');
 
         const response = await fetch(url, {
             headers: {'Access-Control-Allow-Origin': '*'},
@@ -43,7 +44,8 @@ class Basket extends Component{
 
     //TODO dell all basket_prod where basket_id === basket_id, add basket_id, and total price to order table. add order_id to pay table
     makeOrder(){
-        const basketID = BasketData.basket_data.id;
+        const basketID = sessionStorage.getItem('basketID');
+        console.log("BasketID -> " + basketID);
         let totalPrice = 0;
         //add order
         this.state.fetchedBasketProducts.forEach((e) =>
@@ -60,8 +62,6 @@ class Basket extends Component{
             method: 'DELETE',
             mode: 'cors'
         });
-        //add order
-
     }
 
 
@@ -84,62 +84,43 @@ class Basket extends Component{
 
     render(){
 		let tmpMountedProducts = [];
-	    	console.log(this.state.fetchedBasketProducts.length);
 		if(!this.state.fetchedBasketProducts.length){
 			return(
 				<div>
-					<h1>
-						Basket page
-					</h1>
+					<h1>{this.state.pageTitle}</h1>
 					<p>{this.state.compState}</p>
 				</div>
 			);
 		}else{
-			let counter = 0;
+            let counter = 0;
 			this.state.fetchedBasketProducts.forEach((el) =>{
 				counter++;
 			    tmpMountedProducts.push(
-				<li>
-				    <ul>
-					<li>{counter} - Product</li>
-					<li>{el.id}</li>
-                        <li>{el.name}</li>
-					<li>{el.price}</li>
-					<li>{el.description}</li>
-				    </ul>
-					<br/>
-                    <button onClick={this.delProduct.bind(this, el.id)}>Delete</button>
-				</li>
+				   <Row>
+                       <Col sm={6} md={3} lg={8}>
+                           <h3>{counter} - Product</h3>
+                           <h4>{el.name}</h4>
+                           <p>{el.description}</p>
+                           <p>Cena - {el.price}</p><br/>
+                           <Button bsStyle="primary" onClick={this.delProduct.bind(this, el.id)}>{this.state.delButtTitle}</Button>
+                       </Col>
+                   </Row>
 			    );
 			});
 			return(
-				<div>
-					<h1>Basket page</h1>
-                    <ul>
-                        {tmpMountedProducts}
-                    </ul>
-				<button onClick={this.makeOrder.bind(this)}>Order</button>
+				<div className={'basketBox'}>
+					<h1>{this.state.pageTitle}</h1>
+                    <div>
+                        <Grid>
+                            {tmpMountedProducts}
+                        </Grid>
+                    </div>
+				    <Button bsStyle="primary" onClick={this.makeOrder.bind(this)}>Zamowic</Button>
 				</div>
 			);
 		}
     }
 }
 
-/*
-const OrderData = {
-    order_data: [],
-    createOrder(basketID, price) {
-        console.log("createOrder ->" + basketID);
-        var url = `http://localhost:9090/orders/add/${basketID}/${price}`;
-        const response = fetch(url, {
-            headers: {'Access-Control-Allow-Origin': '*'},
-            method: 'GET',
-            mode: 'cors'
-        });
-        var json_response = response.json();
-        OrderData.orderData = json_response;
-    }
-};
-*/
 
 export default Basket;

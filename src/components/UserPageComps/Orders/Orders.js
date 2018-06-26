@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import {BasketData} from "../../Login/Login";
+import {Grid, Row, Col} from 'react-bootstrap';
 
 
 class Orders extends Component{
     constructor(){
         super();
         this.state ={
-            compState: "Loading",
+            compState: "Czekaj",
+            pageTitle: "Twoje zamowienia",
             fetchedOrders: [],
         };
         this.request_data();
@@ -14,7 +16,7 @@ class Orders extends Component{
 
 
     request_data = async function () {
-        var url = await "http://localhost:9090/orders/getorders/" + BasketData.basket_data.id;
+        var url = await "http://localhost:9090/orders/getorders/" + sessionStorage.getItem('basketID');
 
         const response = await fetch(url, {
             headers: {'Access-Control-Allow-Origin': '*'},
@@ -33,29 +35,29 @@ class Orders extends Component{
         if(!this.state.fetchedOrders.length){
             return(
                 <div>
-                    <h1>
-                        Orders page
-                    </h1>
+                    <h1>{this.state.pageTitle}</h1>
                     <p>{this.state.compState}</p>
                 </div>
             );
         }else{
             let orders = [];
-            this.state.fetchedOrders.forEach((el) =>
+            let counter = 0;
+            this.state.fetchedOrders.forEach((el) => {
+                counter++;
                 orders.push(
-                    <li>
-                        <div>
-                            <h3>Order</h3>
-                            <p>ID {el.id}</p>
-                            <p>Cost {el.total}</p>
-                        </div>
-                    </li>
-                )
-            );
+                    <Row>
+                        <Col sm={6} md={3} lg={8}>
+                            <h3>{counter} - Zamowienie</h3>
+                            <h4>{el.id}</h4>
+                            <p> Cost - {el.total}</p><br/>
+                        </Col>
+                    </Row>
+                );
+            });
             return(
                 <div>
-                    <h1>Orders list</h1>
-                    <ul>{orders}</ul>
+                    <h1>{this.state.pageTitle}</h1>
+                    <Grid>{orders}</Grid>
                 </div>
             );
         }

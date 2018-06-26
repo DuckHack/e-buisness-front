@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-
-
+import {Button, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
+import './EditKeyword.css'
 
 class EditKeyword extends Component{
     constructor(props){
@@ -32,26 +32,22 @@ class EditKeyword extends Component{
     handleSubmitAdd(e){
         e.preventDefault();
         const data = new FormData(e.target);
-	console.log(data);
         fetch("http://localhost:9090/keyWords/addkeyword", {
             headers: {'Access-Control-Allow-Origin': '*'},
             method: 'POST',
             body: data,
         });
-         console.log('A word was submitted: ' + this.state.word);
     }
 
 
     handleSubmitDel(e){
         e.preventDefault();
         const data = new FormData(e.target);
-        console.log(data);
         fetch("http://localhost:9090/keyWords/delkeyword", {
             headers: {'Access-Control-Allow-Origin': '*'},
             method: 'DELETE',
             body: data,
         });
-        console.log('A word was submitted: ' + this.state.word);
     }
 
 
@@ -70,7 +66,50 @@ class EditKeyword extends Component{
                 <h1>
                     Edit keywords
                 </h1>
-                <form onSubmit={this.handleSubmitAdd}>
+                <div className={'keywordFormsBox'}>
+                    <form onSubmit={this.handleSubmitAdd}>
+                        <FieldGroup
+                            value={this.state.word}
+                            onChange={this.handleChange}
+                            name="word"
+                            id="formControlsText"
+                            type="text"
+                            label="Wprowadz slowo kluczowe"
+                            placeholder="#KEYWORD"
+                        />
+                        <Button type="submit">Add</Button>
+                    </form>
+                    <form onSubmit={this.handleSubmitDel}>
+                        <FormGroup controlId="formControlsSelect">
+                            <ControlLabel>Usunac slowo kluczowe</ControlLabel>
+                            <FormControl name="id" componentClass="select" placeholder="select">
+                                {keyWords}
+                            </FormControl>
+                        </FormGroup>
+                        <Button type="submit">Delete</Button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
+}
+
+
+function FieldGroup({ id, label, help, ...props }) {
+    return (
+        <FormGroup controlId={id}>
+            <ControlLabel>{label}</ControlLabel>
+            <FormControl {...props} />
+            {help && <HelpBlock>{help}</HelpBlock>}
+        </FormGroup>
+    );
+}
+
+
+export default EditKeyword;
+
+
+{/*<form onSubmit={this.handleSubmitAdd}>
                     <div>
                         <label>Add keyword</label>
                     </div>
@@ -89,11 +128,4 @@ class EditKeyword extends Component{
                         </select>
                     </label>
                     <input type="submit" value="Submit"/>
-                </form>
-            </div>
-        );
-    }
-}
-
-
-export default EditKeyword;
+                </form>*/}

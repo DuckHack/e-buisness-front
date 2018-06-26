@@ -3,6 +3,7 @@ import './NavBar.css'
 import {Navbar, Nav, NavItem, PageHeader} from 'react-bootstrap'
 import Logo from './1200px-Ray-Ban_logo.svg.png'
 
+
 class NavBar extends Component{
     render(){
         return(
@@ -29,8 +30,13 @@ class NavBar extends Component{
                         </NavItem>
                     </Nav>
                     <Nav pullRight>
-                        <NavItem eventKey={1} href='/authenticate'>
+                        <NavItem eventKey={3} href='/authenticate'>
                             Auth
+                        </NavItem>
+                    </Nav>
+                    <Nav pullRight>
+                        <NavItem eventKey={4} href='/adminpage'>
+                            Admin page
                         </NavItem>
                     </Nav>
                 </Navbar>

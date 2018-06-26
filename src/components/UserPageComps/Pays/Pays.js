@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import {BasketData, OAuth} from "../../Login/Login";
+import {Grid, Row, Col} from 'react-bootstrap';
+
 
 class Pays extends Component{
     constructor(){
         super();
         this.state ={
-            compState: "Loading",
+            compState: "Czekaj",
+            pageTitle: "Twoje platnosci",
             fetchedPays: [],
         };
         this.request_data();
@@ -18,7 +21,7 @@ class Pays extends Component{
             this.setState({compState: "You haven't pays yet"});
             return;
         }
-        var url = await "http://localhost:9090/pays/get/" + BasketData.basket_data.id;
+        var url = await "http://localhost:9090/pays/get/" + sessionStorage.getItem('basketID');
 
         const response = await fetch(url, {
             headers: {'Access-Control-Allow-Origin': '*'},
@@ -39,31 +42,28 @@ class Pays extends Component{
         if(!this.state.fetchedPays.length){
             return(
                 <div>
-                    <h1>
-                        Pays page
-                    </h1>
+                    <h1>{this.state.pageTitle}</h1>
                     <p>{this.state.compState}</p>
                 </div>
             );
         }else{
-            this.state.fetchedPays.forEach((el) =>
+            let counter = 0;
+            this.state.fetchedPays.forEach((el) =>{
+                counter++;
                 pays.push(
-                    <li>
-                        <div>
-                            <h3>Pay</h3>
-                            <p>ID {el.id}</p>
-                            <p>Cost {el.total}</p>
-                            <p>Order id {el.order_id}</p>
-                        </div>
-                    </li>
+                    <Row>
+                        <Col sm={6} md={2} lg={8}>
+                            <h3>{counter} - Platnosc</h3>
+                            <h4>{el.id}</h4>
+                            <p> Cost - {el.total}</p><br/>
+                        </Col>
+                    </Row>
                 )
-            );
+            });
             return(
                 <div>
-                    <h1>
-                        Pays page
-                    </h1>
-                    <h3>{pays}</h3>
+                    <h1>{this.state.pageTitle}</h1>
+                    <Grid>{pays}</Grid>
                 </div>
             );
         }

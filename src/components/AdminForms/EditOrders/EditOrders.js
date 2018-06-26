@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-
+import {Button, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
+import './EditOrders.css'
 
 class EditOrders extends Component{
     constructor(props){
@@ -30,7 +31,7 @@ class EditOrders extends Component{
         const data = new FormData(e.target);
         fetch("http://localhost:9090/orders/delorder", {
             headers: {'Access-Control-Allow-Origin': '*'},
-            method: 'POST',
+            method: 'DELETE',
             body: data,
         });
     }
@@ -42,22 +43,21 @@ class EditOrders extends Component{
             orders.push(<option value={this.state.fetchedOrders[i].id} key={i}>{this.state.fetchedOrders[i].id}</option>);
         }
         return(
-
             <div>
                 <h1>
                     Edit orders
                 </h1>
-                <form onSubmit={this.handleSubmitDel}>
-                    <div>
-                        <label>Del Order</label>
-                    </div>
-                    <label>Chose the Order and press submit
-                        <select>
-                            {orders}
-                        </select>
-                    </label>
-                    <input type="submit" value="Submit"/>
-                </form>
+                <div className={'orderFormsBox'}>
+                    <form onSubmit={this.handleSubmitDel}>
+                        <FormGroup controlId="formControlsSelect">
+                            <ControlLabel>Usunac zamowenie</ControlLabel>
+                            <FormControl name="id" componentClass="select" placeholder="select">
+                                {orders}
+                            </FormControl>
+                        </FormGroup>
+                        <Button type="submit">Delete</Button>
+                    </form>
+                </div>
             </div>
         );
     }
@@ -65,3 +65,17 @@ class EditOrders extends Component{
 
 
 export default EditOrders;
+
+
+{/*
+<form onSubmit={this.handleSubmitDel}>
+    <div>
+        <label>Del Order</label>
+    </div>
+    <label>Chose the Order and press submit
+        <select>
+            {orders}
+        </select>
+    </label>
+    <input type="submit" value="Submit"/>
+</form>*/}

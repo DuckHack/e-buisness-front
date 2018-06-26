@@ -51,11 +51,10 @@ class ProductElement extends Component{
 
 
     render(){
-	console.log("Product Element, type -> " + this.props.type);
 	if(this.props.type !== this.state.lastType){
 		this.createTypedList();
-	 }
-        let cols = [];
+	}
+	    let cols = [];
         let rows = [];
         let oneRowData = [];
         let curProductList = [];
@@ -68,13 +67,16 @@ class ProductElement extends Component{
 //TODO solve problem with opinion element
         for (let i = 0; i < curProductList.length; i++) {
             cols.push(
-                <Col sm={6} md={3} lg={4}>
+                <Col sm={3} md={3} lg={4}>
                     <Thumbnail src="/thumbnaildiv.png" alt="242x200">
                         <h3>{curProductList[i].name}</h3>
                         <p>{curProductList[i].description}</p>
                         <p>
                             <AddToBasket product_id={curProductList[i].id}/>
                         </p>
+                        <div>
+                            <OpinionElement product_id={curProductList[i].id}/>
+                        </div>
                     </Thumbnail>
                 </Col>
             );

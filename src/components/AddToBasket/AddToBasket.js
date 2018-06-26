@@ -11,16 +11,21 @@ class AddToBasket extends Component{
         this.addToBasket = this.addToBasket.bind(this);
         this.state = {
             logged: false,
+            addButtonTitle: 'Dodaj do koszyka'
         }
     }
 
 
     componentWillMount() {
-        if (OAuth.isAuthenticated) {
+        if (sessionStorage.getItem('isAuth')) {
+            console.log("AddToBasket -> " + sessionStorage.getItem('authData') );
+            console.log("isAuth -> " + sessionStorage.getItem('isAuth') );
             this.setState({logged: true});
-            if (BasketData.basket_data.length === 0) {
-                BasketData.get_basket(OAuth.authenticatedData.uuid)
+/*
+            if (BasketData.get_basket(sessionStorage.getItem('basketID')) === null) {
+                BasketData.get_basket(sessionStorage.getItem('authData'))
             }
+*/
         }else{
             this.setState({logged: false});
         }
@@ -29,7 +34,7 @@ class AddToBasket extends Component{
 
     loggedEl(){
         return(
-            <Button bsStyle="primary" onClick={this.addToBasket.bind(this, this.props.product_id)}>Add to basket</Button>
+            <Button bsStyle="primary" onClick={this.addToBasket.bind(this, this.props.product_id)}>{this.state.addButtonTitle}</Button>
             );
     }
 
@@ -44,8 +49,8 @@ class AddToBasket extends Component{
 
 
     addToBasket(prodID){
-        console.log("addToBasket inside");
-        const basketID = BasketData.basket_data.id;
+        console.log("basketID -> " + sessionStorage.getItem('basketID'));
+        const basketID = sessionStorage.getItem('basketID');
         fetch(`http://localhost:9090/basketproducts/add/${prodID}/${basketID}`, {
             headers: {'Access-Control-Allow-Origin': '*'},
             method: 'POST',

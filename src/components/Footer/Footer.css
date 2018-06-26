@@ -1,0 +1,12 @@
+.bottomFooter{
+    background-color: black;
+    position: static;
+    bottom: 0;
+}
+
+.bottomFooter h1{
+    margin: 0;
+    padding: 10px 0 10px 0;
+    border-top: solid 2px white;
+    color: white;
+}

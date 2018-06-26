@@ -19,8 +19,9 @@ const Main = () => (
             <Route exact path='/' component={Home}/>
             <Route path='/products' component={Products}/>
             <Route path='/authenticate' component={Auth}/>
-            {/*<PrivateRoute path='/userpage' component={UserPage}/>*/}
-            <Route path='/userpage' component={UserPage}/>
+            //TODO don't forget change to PrivateRout
+            <PrivateRoute path='/userpage' component={UserPage}/>
+            {/*<Route path='/userpage' component={UserPage}/>*/}
             <Route path='/adminpage' component={AdminPage}/>
         </Switch>
     </main>

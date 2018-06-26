@@ -1,5 +1,24 @@
+.AuthBox{
+	min-height: 600px;
+}
+
+.GLogo{
+	border: 2px solid black;
+	max-width: 300px;
+	margin: auto;
+}
+
 .GLogo img{
     width: 80px;
     height: auto;
-    background-color: #222222;
+    margin: 40px;
+}
+
+.linkButton{
+    background-color: #f44336;
+    color: white;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
 }

@@ -42,9 +42,8 @@ class Login extends Component{
 export const OAuth = {
     isAuthenticated: false,
     authenticatedData: [],
-
+    basket_data: [],
     async authenticate(cb, provider_url) {
-        console.log(provider_url + " <- Provider URL");
         try {
             var url = 'http://localhost:9090' + provider_url;
 
@@ -59,15 +58,34 @@ export const OAuth = {
 
             if (response.status.valueOf() === 200) {
                 this.isAuthenticated = await true;
-                console.log(this.authenticatedData);
+                await sessionStorage.setItem('isAuth', 'true');
             }
         } catch (e) {
             console.log(e);
         }
-        console.log(this.authenticatedData);
+        await sessionStorage.setItem('authData', this.authenticatedData.uuid);
+        console.log(this.authenticatedData.uuid + " <- authenticatedData");
+        console.log('Is auth -> ' + this.isAuthenticated);
+        //create basket
+
+        if(sessionStorage.getItem('isAuth') && sessionStorage.getItem('basketID') === null) {
+            var url = await "http://localhost:9090/basket/add/" + sessionStorage.getItem('authData');
+            const response = await fetch(url, {
+                headers: {'Access-Control-Allow-Origin': '*'},
+                method: 'GET',
+                mode: 'cors'
+            });
+            var json_response = await response.json();
+            OAuth.basket_data = await json_response;
+            await sessionStorage.setItem('basketID', this.basket_data.id);
+            await console.log(BasketData.get_basket("BasketID - > " + sessionStorage.getItem('basketID')));
+        }
+
     },
     signout(cb) {
+        console.log(this.authenticatedData + " <- authenticatedData");
         this.isAuthenticated = false;
+        sessionStorage.setItem('isAuth', 'false');
         this.authenticatedData = [];
     }
 };
@@ -98,7 +116,8 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route
         {...rest}
         render={props =>
-            OAuth.isAuthenticated ? (
+            sessionStorage.getItem('isAuth') === 'true' ? (
+            // OAuth.isAuthenticated ? (
                 <Component {...props} />
             ) : (
                 <Redirect
@@ -117,6 +136,10 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
 export const BasketData = {
     basket_data: [],
     async get_basket(user_id)  {
+            console.log("USER ID ->" + user_id);
+            if(sessionStorage.getItem('basketID')){
+                return;
+            }
             var url = await "http://localhost:9090/basket/add/" + user_id;
             const response = await fetch(url, {
                 headers: {'Access-Control-Allow-Origin': '*'},
@@ -125,6 +148,8 @@ export const BasketData = {
             });
             var json_response = await response.json();
             BasketData.basket_data = await json_response;
+            await sessionStorage.setItem('basketID', this.basket_data.id);
+            await console.log(BasketData.get_basket("BasketID - > " + sessionStorage.getItem('basketID')));
         //}
     }
 

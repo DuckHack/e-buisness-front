@@ -12,6 +12,7 @@ import RayBan7 from './Banner_Desktop_Ray_Ban_Sunglasses_Wayfarer.jpeg'
 
 class Home extends Component{
     render(){
+        sessionStorage.setItem('authData', null)
         return(
             <div className={'mainPageBox'}>
                 <div className={'carouselBox'}>
@@ -66,13 +67,6 @@ class Home extends Component{
                             </Row>
                         </div>
                     </Grid>
-                </div>
-                <div className={'bottomFooter'}>
-                    <footer>
-                        <h1>
-                            Footer
-                        </h1>
-                    </footer>
                 </div>
             </div>
 
