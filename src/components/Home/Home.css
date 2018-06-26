@@ -1,0 +1,22 @@
+.mainPageBox{
+    background-color: #222222;
+}
+
+.carouselBox{
+    width: 900px;
+    height: 385px;
+    margin: 0px auto 0px auto;
+    padding-top: 10px;
+}
+
+.imageGrid{
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.row{
+    width: 930px;
+    height: auto;
+    margin: 0px auto 0px auto;
+}
